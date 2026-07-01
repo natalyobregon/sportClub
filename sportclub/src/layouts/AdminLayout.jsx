@@ -1,17 +1,39 @@
-import { Link, Outlet } from "react-router-dom"
-    function AdminLayout() {
-        return (
-            <div>
-                <nav>
-                    <Link to="/">Inicio</Link> |
-                    <Link to="/admin/dashboard">Dashboard Admin</Link>
-                </nav>
+import { Link, Outlet, useNavigate } from "react-router-dom"
+import { Button, Container, Nav, Navbar } from "react-bootstrap"
+import { logout, getUser } from "../services/authService"
 
-                <main>
+function AdminLayout() {
+    const navigate = useNavigate()
+    const user = getUser()
+    const handleLogout = () => {
+        logout()
+        navigate("/login")
+    }  
+
+ return (
+        <>
+            <Navbar bg="dark" variant="dark" expand="lg">
+                <Container>
+                    <Navbar.Brand>SportClub Admin</Navbar.Brand>
+
+                    <Nav className="me-auto">
+                        <Link className="nav-link" to="/admin/dashboard">Dashboard</Link>
+                    </Nav>
+
+                    <span className="text-white me-3">
+                        {user?.name}
+                    </span>
+
+                    <Button variant="outline-light" onClick={handleLogout}>
+                        Cerrar sesión
+                    </Button>
+                </Container>
+            </Navbar>
+
+            <Container className="mt-4">
                 <Outlet />
-            </main>
-        </div>
+            </Container>
+        </>
     )
 }
-
 export default AdminLayout
