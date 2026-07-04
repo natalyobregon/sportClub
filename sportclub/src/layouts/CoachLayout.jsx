@@ -5,7 +5,10 @@ function CoachLayout() {
         <div>
             <nav>
                 <Link to="/">Inicio</Link> |
-                <Link to="/coach/dashboard">Dashboard Coach</Link>
+                <Link to="/coach/dashboard">Dashboard Coach</Link> |
+                <Link to="/coach/my-classes">Mis Clases</Link> |
+                <Link to="/coach/my-schedule">Mi Horario</Link> |
+                <Link to="/coach/profile">Mi Perfil</Link>
             </nav>
 
             <main>

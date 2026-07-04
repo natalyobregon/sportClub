@@ -66,7 +66,7 @@ function UsersPage() {
     const handleDelete = async (user) => {
         const result = await Swal.fire({
             title: "¿Eliminar usuario?",
-            text: `Se eliminará a ${user.name}`,
+            text: `Se eliminará a ${user.full_name}`,
             icon: "warning",
             showCancelButton: true,
             confirmButtonText: "Sí, eliminar",
@@ -115,7 +115,7 @@ function UsersPage() {
                             {users.map((user) => (
                                 <tr key={user.id}>
                                     <td>{user.id}</td>
-                                    <td>{user.full_name}</td>
+                                    <td>{user.name}</td>
                                     <td>{user.email}</td>
                                     <td>
                                         <Badge bg={user.role === "admin" ? "success" : user.role

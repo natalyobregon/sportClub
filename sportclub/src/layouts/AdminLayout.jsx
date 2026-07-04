@@ -18,10 +18,16 @@ function AdminLayout() {
 
                     <Nav className="me-auto">
                         <Link className="nav-link" to="/admin/dashboard">Dashboard</Link>
+                        <Link className="nav-link" to="/admin/users">Usuarios</Link>
+                        <Link className="nav-link" to="/admin/sports">Deportes</Link>
+                        <Link className="nav-link" to="/admin/rooms">Salas</Link>
+                        <Link className="nav-link" to="/admin/assignments">Asignaciones</Link>
+                        <Link className="nav-link" to="/admin/schedules">Horarios</Link>
+                        <Link className="nav-link" to="/admin/profile">Mi Perfil</Link>
                     </Nav>
 
                     <span className="text-white me-3">
-                        {user?.name}
+                        {user?.full_name}
                     </span>
 
                     <Button variant="outline-light" onClick={handleLogout}>

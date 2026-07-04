@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
 
 const initialForm = {
-    "full_name": "",
+    "name": "",
     email: "",
     role: "user",
     password: ""
@@ -14,7 +14,7 @@ function UserFormModal({ show, handleClose, handleSave, selectedUser }) {
     useEffect(() => {
         if (selectedUser) {
             setFormData({
-                "full_name": selectedUser.name || "",
+                "name": selectedUser.name || "",
                 email: selectedUser.email || "",
                 role: selectedUser.role || "user",
                 password: selectedUser.password || ""
@@ -47,7 +47,7 @@ function UserFormModal({ show, handleClose, handleSave, selectedUser }) {
                         <Form.Control
                             type="text"
                             name="full_name"
-                            value={formData["full_name"]}
+                            value={formData["name"]}
                             onChange={handleChange}
                             required
                         />
