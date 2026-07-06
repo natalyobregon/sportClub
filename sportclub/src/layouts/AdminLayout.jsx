@@ -1,45 +1,48 @@
 import { Link, Outlet, useNavigate } from "react-router-dom"
-import { Button, Container, Nav, Navbar } from "react-bootstrap"
+import { Button } from "react-bootstrap"
 import { logout, getUser } from "../services/authService"
+import logo from "../assets/logo.png"
 
 function AdminLayout() {
     const navigate = useNavigate()
     const user = getUser()
+
     const handleLogout = () => {
         logout()
         navigate("/login")
-    }  
+    }
 
- return (
-        <>
-            <Navbar bg="dark" variant="dark" expand="lg">
-                <Container>
-                    <Navbar.Brand>SportClub Admin</Navbar.Brand>
+    return (
+        <div className="d-flex">
+            <aside className="role-sidebar" style={{ backgroundColor: "var(--role-admin-a)" }}>
+                <div className="d-flex align-items-center gap-2 mb-1">
+                    <img src={logo} alt="SportClub" className="brand-crest" style={{ width: "32px", height: "32px" }} />
+                    <span className="brand-heading" style={{ fontSize: "12px" }}>SportClub</span>
+                </div>
+                <div className="small mb-4" style={{ opacity: 0.7, letterSpacing: "1px" }}>ADMIN</div>
 
-                    <Nav className="me-auto">
-                        <Link className="nav-link" to="/admin/dashboard">Dashboard</Link>
-                        <Link className="nav-link" to="/admin/users">Usuarios</Link>
-                        <Link className="nav-link" to="/admin/sports">Deportes</Link>
-                        <Link className="nav-link" to="/admin/rooms">Salas</Link>
-                        <Link className="nav-link" to="/admin/assignments">Asignaciones</Link>
-                        <Link className="nav-link" to="/admin/schedules">Horarios</Link>
-                        <Link className="nav-link" to="/admin/profile">Mi Perfil</Link>
-                    </Nav>
+                <nav className="d-flex flex-column gap-1 mb-4">
+                    <Link className="nav-link" to="/admin/dashboard">Dashboard</Link>
+                    <Link className="nav-link" to="/admin/users">Usuarios</Link>
+                    <Link className="nav-link" to="/admin/sports">Deportes</Link>
+                    <Link className="nav-link" to="/admin/rooms">Salas</Link>
+                    <Link className="nav-link" to="/admin/assignments">Asignaciones</Link>
+                    <Link className="nav-link" to="/admin/schedules">Horarios</Link>
+                    <Link className="nav-link" to="/admin/profile">Mi Perfil</Link>
+                </nav>
 
-                    <span className="text-white me-3">
-                        {user?.full_name}
-                    </span>
-
-                    <Button variant="outline-light" onClick={handleLogout}>
+                <div style={{ marginTop: "auto" }}>
+                    <div className="small mb-2">{user?.full_name}</div>
+                    <Button variant="outline-light" size="sm" className="w-100" onClick={handleLogout}>
                         Cerrar sesión
                     </Button>
-                </Container>
-            </Navbar>
+                </div>
+            </aside>
 
-            <Container className="mt-4">
+            <main className="flex-fill p-4">
                 <Outlet />
-            </Container>
-        </>
+            </main>
+        </div>
     )
 }
 export default AdminLayout

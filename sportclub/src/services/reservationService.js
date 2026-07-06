@@ -12,6 +12,21 @@ function getHeader() {
     }
 }
 
+export async function getAllReservations() {
+    const response = await fetch(API_URL, {
+        method: "GET",
+        headers: getHeader()
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+        throw new Error(data.message || "Error al obtener las reservas")
+    }
+
+    return data
+}
+
 export async function getMyReservations() {
     const response = await fetch(`${API_URL}/my-reservations`, {
         method: "GET",

@@ -1,0 +1,83 @@
+/* Paleta de marca (Home / Login) */
+:root {
+  --brand-yellow: #FFC300;
+  --brand-purple: #5B21B6;
+
+  /* Cada rol tiene un color primario (barra lateral) y uno secundario (corte diagonal del dashboard) */
+  --role-admin-a: #7A1E1E;
+  --role-admin-b: #FF6A13;
+
+  --role-coach-a: #146C43;
+  --role-coach-b: #4ADE80;
+
+  --role-user-a: #1B2A8C;
+  --role-user-b: #00C2FF;
+
+  --brand-ink: #14121A;
+}
+
+/* Tipografía de marca para títulos grandes */
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+
+.brand-heading {
+  font-family: 'Archivo Black', sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+/* Corte diagonal a dos tonos, usado en Home, Login y los dashboards */
+.split-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.split-bg-a {
+  position: absolute;
+  inset: 0;
+}
+
+.split-bg-b {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(0 58%, 100% 32%, 100% 100%, 0 100%);
+}
+
+.split-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Escudo de marca (logo.png), consistente en toda la app */
+.brand-crest {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #fff;
+  object-fit: contain;
+  padding: 5px;
+  flex-shrink: 0;
+}
+
+/* Barra lateral de navegación por rol */
+.role-sidebar {
+  width: 230px;
+  flex-shrink: 0;
+  min-height: 100vh;
+  color: #fff;
+  padding: 24px 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.role-sidebar .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+
+.role-sidebar .nav-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+
