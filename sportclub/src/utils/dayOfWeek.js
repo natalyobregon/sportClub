@@ -1,0 +1,14 @@
+export const DAYS_OF_WEEK = [
+    { value: 1, label: "Lunes" },
+    { value: 2, label: "Martes" },
+    { value: 3, label: "Miércoles" },
+    { value: 4, label: "Jueves" },
+    { value: 5, label: "Viernes" },
+    { value: 6, label: "Sábado" },
+    { value: 7, label: "Domingo" }
+]
+
+export function getDayLabel(dayNumber) {
+    const day = DAYS_OF_WEEK.find((d) => d.value === Number(dayNumber))
+    return day ? day.label : "Día desconocido"
+}
