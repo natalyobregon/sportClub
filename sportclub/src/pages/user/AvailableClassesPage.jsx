@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import { Badge, Button, Card, Col, Row, Spinner } from "react-bootstrap"
+import { Button, Card, Spinner } from "react-bootstrap"
 import Swal from "sweetalert2"
 import ReservationModal from "../../componentes/reservations/ReservationModal"
-import { getAvailableClasses } from "../../services/memberService"
+import { getAvailableClasses } from "../../services/MemberService"
 import { createReservation } from "../../services/reservationService"
 import { getDayLabel } from "../../utils/dayOfWeek"
+import { IconActivity, IconClock } from "../../componentes/ui/Icons"
 
 function AvailableClassesPage() {
     const [classes, setClasses] = useState([])
@@ -48,68 +49,83 @@ function AvailableClassesPage() {
         }
     }
 
-    if (loading) {
-        return (
-            <div className="text-center p-4">
-                <Spinner animation="border" />
-                <p className="mt-2">Cargando clases disponibles...</p>
-            </div>
-        )
-    }
-
     return (
-        <>
-            <h4 className="mb-3">Clases Disponibles</h4>
+        <Card className="card-modern">
+            <Card.Header>
+                <h4 className="mb-0" style={{ fontWeight: 700 }}>Clases Disponibles</h4>
+                <div className="small text-muted">{classes.length} clases con cupo</div>
+            </Card.Header>
 
-            {classes.length === 0 ? (
-                <p>No hay clases disponibles por el momento.</p>
-            ) : (
-                <Row xs={1} md={2} lg={3} className="g-3">
-                    {classes.map((item) => (
-                        <Col key={item.id}>
-                            <Card className="h-100 shadow-sm">
-                                <Card.Body>
-                                    <Card.Title>{item.sport?.name}</Card.Title>
-                                    <Card.Subtitle className="mb-2 text-muted">
-                                        Sala: {item.room?.name}
-                                    </Card.Subtitle>
-                                    <Card.Text className="small">
-                                        Coach: {item.coach?.full_name || item.coach?.email}
-                                    </Card.Text>
-
-                                    <div className="mb-3">
-                                        {(item.schedules || []).length === 0 ? (
-                                            <span className="text-muted small">
-                                                Sin horarios disponibles.
-                                            </span>
-                                        ) : (
-                                            item.schedules.map((schedule) => (
-                                                <Badge
-                                                    bg="secondary"
-                                                    className="me-2 mb-2"
-                                                    key={schedule.id}
+            <Card.Body>
+                {loading ? (
+                    <div className="text-center p-4">
+                        <Spinner animation="border" />
+                        <p className="mt-2">Cargando clases disponibles...</p>
+                    </div>
+                ) : classes.length === 0 ? (
+                    <div className="text-center text-muted p-4">
+                        <IconActivity size={28} />
+                        <p className="mt-2 mb-0">No hay clases disponibles por el momento.</p>
+                    </div>
+                ) : (
+                    <div className="table-scroll">
+                        <table className="table-modern">
+                            <thead>
+                                <tr>
+                                    <th>Deporte</th>
+                                    <th>Sala</th>
+                                    <th>Coach</th>
+                                    <th>Horarios</th>
+                                    <th style={{ textAlign: "right" }}>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {classes.map((item) => (
+                                    <tr key={item.id}>
+                                        <td>
+                                            <div className="d-flex align-items-center gap-2">
+                                                <div
+                                                    className="avatar-badge"
+                                                    style={{ background: "#E8EEFB", color: "#1D4ED8" }}
                                                 >
-                                                    {getDayLabel(schedule.day_of_week)}{" "}
-                                                    {schedule.start_time?.substring(0, 5)}
-                                                </Badge>
-                                            ))
-                                        )}
-                                    </div>
-
-                                    <Button
-                                        variant="primary"
-                                        size="sm"
-                                        disabled={(item.schedules || []).length === 0}
-                                        onClick={() => openReserveModal(item)}
-                                    >
-                                        Reservar
-                                    </Button>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
-            )}
+                                                    <IconActivity size={14} />
+                                                </div>
+                                                <span>{item.sport?.name}</span>
+                                            </div>
+                                        </td>
+                                        <td>{item.room?.name}</td>
+                                        <td className="text-muted">{item.coach?.full_name || item.coach?.email}</td>
+                                        <td>
+                                            {(item.schedules || []).length === 0 ? (
+                                                <span className="text-muted small">Sin horarios</span>
+                                            ) : (
+                                                <div className="d-flex flex-wrap gap-1">
+                                                    {item.schedules.map((schedule) => (
+                                                        <span key={schedule.id} className="status-pill status-pill-inactive">
+                                                            <IconClock size={11} /> {getDayLabel(schedule.day_of_week)}{" "}
+                                                            {schedule.start_time?.substring(0, 5)}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </td>
+                                        <td style={{ textAlign: "right" }}>
+                                            <Button
+                                                size="sm"
+                                                className="btn-brand-primary"
+                                                disabled={(item.schedules || []).length === 0}
+                                                onClick={() => openReserveModal(item)}
+                                            >
+                                                Reservar
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+            </Card.Body>
 
             <ReservationModal
                 show={showModal}
@@ -117,7 +133,7 @@ function AvailableClassesPage() {
                 handleSave={handleReserve}
                 sportRoomClass={selectedClass}
             />
-        </>
+        </Card>
     )
 }
 

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
-import { Badge, Button, Card, Form, Spinner, Table } from "react-bootstrap"
+import { Button, Card, Form, Spinner } from "react-bootstrap"
 import Swal from "sweetalert2"
 import SportFormModal from "../../componentes/sports/SportFormModal"
+import { IconPlus, IconEdit, IconTrash, IconActivity } from "../../componentes/ui/Icons"
 
 import {
     createSport,
@@ -96,11 +97,14 @@ function SportsPage() {
     }
 
     return (
-        <Card className="shadow-sm">
+        <Card className="card-modern">
             <Card.Header className="d-flex justify-content-between align-items-center">
-                <h4 className="mb-0">Gestión de Deportes</h4>
-                <Button variant="primary" onClick={openCreateModal}>
-                    Nuevo Deporte
+                <div>
+                    <h4 className="mb-0" style={{ fontWeight: 700 }}>Gestión de Deportes</h4>
+                    <div className="small text-muted">{sports.length} deportes registrados</div>
+                </div>
+                <Button className="btn-brand-primary d-flex align-items-center gap-2" onClick={openCreateModal}>
+                    <IconPlus size={16} /> Nuevo Deporte
                 </Button>
             </Card.Header>
 
@@ -110,58 +114,76 @@ function SportsPage() {
                         <Spinner animation="border" />
                         <p className="mt-2">Cargando deportes...</p>
                     </div>
+                ) : sports.length === 0 ? (
+                    <div className="text-center text-muted p-4">
+                        <IconActivity size={28} />
+                        <p className="mt-2 mb-0">Aún no hay deportes registrados.</p>
+                    </div>
                 ) : (
-                    <Table responsive striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Objetivo</th>
-                                <th>Duración</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {sports.map((sport) => (
-                                <tr key={sport.id}>
-                                    <td>{sport.id}</td>
-                                    <td>{sport.name}</td>
-                                    <td>{sport.objective}</td>
-                                    <td>{sport.duration} min</td>
-                                    <td>
-                                        <Form.Check
-                                            type="switch"
-                                            checked={!!sport.status}
-                                            onChange={() => handleToggleStatus(sport)}
-                                            label={
-                                                <Badge bg={sport.status ? "success" : "secondary"}>
-                                                    {sport.status ? "Activo" : "Inactivo"}
-                                                </Badge>
-                                            }
-                                        />
-                                    </td>
-                                    <td>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => openEditModal(sport)}
-                                        >
-                                            Editar
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleDelete(sport)}
-                                        >
-                                            Eliminar
-                                        </Button>
-                                    </td>
+                    <div className="table-scroll">
+                        <table className="table-modern">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Objetivo</th>
+                                    <th>Duración</th>
+                                    <th>Estado</th>
+                                    <th style={{ textAlign: "right" }}>Acciones</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                                {sports.map((sport) => (
+                                    <tr key={sport.id}>
+                                        <td>
+                                            <div className="d-flex align-items-center gap-2">
+                                                <div
+                                                    className="avatar-badge"
+                                                    style={{ background: "#FFF6D9", color: "#854F0B" }}
+                                                >
+                                                    <IconActivity size={14} />
+                                                </div>
+                                                <span>{sport.name}</span>
+                                            </div>
+                                        </td>
+                                        <td className="text-muted" style={{ maxWidth: "280px" }}>{sport.objective}</td>
+                                        <td>{sport.duration} min</td>
+                                        <td>
+                                            <Form.Check
+                                                type="switch"
+                                                checked={!!sport.status}
+                                                onChange={() => handleToggleStatus(sport)}
+                                                label={
+                                                    <span className={sport.status ? "status-pill-active status-pill" : "status-pill-inactive status-pill"}>
+                                                        {sport.status ? "Activo" : "Inactivo"}
+                                                    </span>
+                                                }
+                                            />
+                                        </td>
+                                        <td style={{ textAlign: "right" }}>
+                                            <button
+                                                type="button"
+                                                className="icon-action-btn me-2"
+                                                onClick={() => openEditModal(sport)}
+                                                aria-label="Editar deporte"
+                                                title="Editar"
+                                            >
+                                                <IconEdit size={15} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="icon-action-btn danger"
+                                                onClick={() => handleDelete(sport)}
+                                                aria-label="Eliminar deporte"
+                                                title="Eliminar"
+                                            >
+                                                <IconTrash size={15} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </Card.Body>
 

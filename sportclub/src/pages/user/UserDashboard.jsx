@@ -1,26 +1,35 @@
 import { useEffect, useState } from "react"
 import { Col, Row } from "react-bootstrap"
 import { getMyReservations } from "../../services/reservationService"
-import { getAvailableClasses } from "../../services/memberService"
+import { getAvailableClasses } from "../../services/MemberService"
+import { getDayLabel } from "../../utils/dayOfWeek"
 
 function UserDashboard() {
     const [activeCount, setActiveCount] = useState("-")
     const [classesCount, setClassesCount] = useState("-")
+    const [reservations, setReservations] = useState([])
+    const [availableClasses, setAvailableClasses] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const loadStats = async () => {
             try {
+                setLoading(true)
                 const [reservationsRes, classesRes] = await Promise.all([
                     getMyReservations(),
                     getAvailableClasses(),
                 ])
-                const reservations = reservationsRes.data || reservationsRes
-                const classes = classesRes.data || classesRes
+                const reservationsList = reservationsRes.data || reservationsRes
+                const classesList = classesRes.data || classesRes
 
-                setActiveCount(reservations.filter((r) => r.status === "active").length)
-                setClassesCount(classes.length)
-            } catch (error) {
+                setActiveCount(reservationsList.filter((r) => r.status === "active").length)
+                setClassesCount(classesList.length)
+                setReservations(reservationsList.slice(0, 5))
+                setAvailableClasses(classesList.slice(0, 5))
+            } catch {
                 // Si alguna estadística falla, el dashboard igual se muestra con "-"
+            } finally {
+                setLoading(false)
             }
         }
         loadStats()
@@ -41,7 +50,7 @@ function UserDashboard() {
                     Mis reservas, clases disponibles y mi perfil.
                 </p>
 
-                <Row className="g-3">
+                <Row className="g-3 mb-4">
                     <Col xs={6} md={4}>
                         <div className="bg-white rounded p-3 text-center h-100">
                             <div className="fw-bold fs-3" style={{ color: "var(--role-user-a)" }}>{activeCount}</div>
@@ -55,6 +64,76 @@ function UserDashboard() {
                         </div>
                     </Col>
                 </Row>
+
+                {!loading && (
+                    <Row className="g-3">
+                        <Col md={6}>
+                            <div className="bg-white rounded p-3 h-100">
+                                <div className="fw-semibold mb-2" style={{ fontSize: "13px" }}>Mis reservas</div>
+                                {reservations.length === 0 ? (
+                                    <div className="small text-muted">Aún no tienes reservas.</div>
+                                ) : (
+                                    <div className="table-scroll">
+                                        <table className="table-modern" style={{ fontSize: "13px" }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Clase</th>
+                                                    <th>Horario</th>
+                                                    <th>Estado</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {reservations.map((r) => (
+                                                    <tr key={r.id}>
+                                                        <td>{r.classSchedule?.sportRoom?.sport?.name || "-"}</td>
+                                                        <td className="text-muted">
+                                                            {r.classSchedule?.day_of_week ? getDayLabel(r.classSchedule.day_of_week) : "-"}{" "}
+                                                            {r.classSchedule?.start_time?.substring(0, 5)}
+                                                        </td>
+                                                        <td>
+                                                            <span className={r.status === "active" ? "status-pill status-pill-active" : "status-pill status-pill-inactive"}>
+                                                                {r.status === "active" ? "Activa" : r.status}
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </div>
+                        </Col>
+                        <Col md={6}>
+                            <div className="bg-white rounded p-3 h-100">
+                                <div className="fw-semibold mb-2" style={{ fontSize: "13px" }}>Clases disponibles</div>
+                                {availableClasses.length === 0 ? (
+                                    <div className="small text-muted">No hay clases disponibles por ahora.</div>
+                                ) : (
+                                    <div className="table-scroll">
+                                        <table className="table-modern" style={{ fontSize: "13px" }}>
+                                            <thead>
+                                                <tr>
+                                                    <th>Deporte</th>
+                                                    <th>Sala</th>
+                                                    <th>Coach</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {availableClasses.map((c) => (
+                                                    <tr key={c.id}>
+                                                        <td>{c.sport?.name}</td>
+                                                        <td>{c.room?.name}</td>
+                                                        <td className="text-muted">{c.coach?.full_name || "-"}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </div>
+                        </Col>
+                    </Row>
+                )}
             </div>
         </div>
     )

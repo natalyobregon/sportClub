@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
-import { Badge, Button, Card, Spinner, Table } from "react-bootstrap"
+import { Card, Spinner } from "react-bootstrap"
 import Swal from "sweetalert2"
 import { cancelReservation, getMyReservations } from "../../services/reservationService"
 import { getDayLabel } from "../../utils/dayOfWeek"
+import { IconClipboard, IconActivity } from "../../componentes/ui/Icons"
 
 function MyReservationsPage() {
     const [reservations, setReservations] = useState([])
@@ -47,9 +48,10 @@ function MyReservationsPage() {
     }
 
     return (
-        <Card className="shadow-sm">
+        <Card className="card-modern">
             <Card.Header>
-                <h4 className="mb-0">Mis Reservas</h4>
+                <h4 className="mb-0" style={{ fontWeight: 700 }}>Mis Reservas</h4>
+                <div className="small text-muted">{reservations.length} reservas totales</div>
             </Card.Header>
 
             <Card.Body>
@@ -59,62 +61,71 @@ function MyReservationsPage() {
                         <p className="mt-2">Cargando mis reservas...</p>
                     </div>
                 ) : reservations.length === 0 ? (
-                    <p>Aún no tienes reservas.</p>
+                    <div className="text-center text-muted p-4">
+                        <IconClipboard size={28} />
+                        <p className="mt-2 mb-0">Aún no tienes reservas.</p>
+                    </div>
                 ) : (
-                    <Table responsive striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>Deporte</th>
-                                <th>Sala</th>
-                                <th>Día</th>
-                                <th>Horario</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {reservations.map((reservation) => {
-                                const schedule = reservation.classSchedule
-                                const sportRoom = schedule?.sportRoom
+                    <div className="table-scroll">
+                        <table className="table-modern">
+                            <thead>
+                                <tr>
+                                    <th>Deporte</th>
+                                    <th>Sala</th>
+                                    <th>Día</th>
+                                    <th>Horario</th>
+                                    <th>Estado</th>
+                                    <th style={{ textAlign: "right" }}>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {reservations.map((reservation) => {
+                                    const schedule = reservation.classSchedule
+                                    const sportRoom = schedule?.sportRoom
 
-                                return (
-                                    <tr key={reservation.id}>
-                                        <td>{sportRoom?.sport?.name}</td>
-                                        <td>{sportRoom?.room?.name}</td>
-                                        <td>{getDayLabel(schedule?.day_of_week)}</td>
-                                        <td>
-                                            {schedule?.start_time?.substring(0, 5)} -{" "}
-                                            {schedule?.end_time?.substring(0, 5)}
-                                        </td>
-                                        <td>
-                                            <Badge
-                                                bg={
-                                                    reservation.status === "active"
-                                                        ? "success"
-                                                        : "secondary"
-                                                }
-                                            >
-                                                {reservation.status === "active"
-                                                    ? "Activa"
-                                                    : "Cancelada"}
-                                            </Badge>
-                                        </td>
-                                        <td>
-                                            {reservation.status === "active" && (
-                                                <Button
-                                                    variant="danger"
-                                                    size="sm"
-                                                    onClick={() => handleCancel(reservation)}
-                                                >
-                                                    Cancelar
-                                                </Button>
-                                            )}
-                                        </td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </Table>
+                                    return (
+                                        <tr key={reservation.id}>
+                                            <td>
+                                                <div className="d-flex align-items-center gap-2">
+                                                    <div
+                                                        className="avatar-badge"
+                                                        style={{ background: "#E8EEFB", color: "#1D4ED8" }}
+                                                    >
+                                                        <IconActivity size={14} />
+                                                    </div>
+                                                    <span>{sportRoom?.sport?.name}</span>
+                                                </div>
+                                            </td>
+                                            <td>{sportRoom?.room?.name}</td>
+                                            <td className="text-muted">{getDayLabel(schedule?.day_of_week)}</td>
+                                            <td className="text-muted">
+                                                {schedule?.start_time?.substring(0, 5)} -{" "}
+                                                {schedule?.end_time?.substring(0, 5)}
+                                            </td>
+                                            <td>
+                                                <span className={reservation.status === "active" ? "status-pill status-pill-active" : "status-pill status-pill-inactive"}>
+                                                    {reservation.status === "active" ? "Activa" : "Cancelada"}
+                                                </span>
+                                            </td>
+                                            <td style={{ textAlign: "right" }}>
+                                                {reservation.status === "active" && (
+                                                    <button
+                                                        type="button"
+                                                        className="icon-action-btn danger"
+                                                        onClick={() => handleCancel(reservation)}
+                                                        aria-label="Cancelar reserva"
+                                                        title="Cancelar"
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </Card.Body>
         </Card>

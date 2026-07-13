@@ -18,6 +18,24 @@ export async function loginUser(credentials) {
     return data
 }
 
+export async function registerUser(userData) {
+    const response = await fetch(`${API_URL}register`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(userData)
+    })
+
+    const data = await response.json()
+
+    if (!response.ok) {
+        throw new Error(data.message || "Error al crear la cuenta")
+    }
+
+    return data
+}
+
 export function saveSession(token, user) {
     localStorage.setItem("token", token)
     localStorage.setItem("user", JSON.stringify(user))

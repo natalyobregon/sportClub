@@ -5,6 +5,7 @@ import Swal from "sweetalert2"
 import { getSports } from "../../services/sportService"
 import { getRooms } from "../../services/roomService"
 import { getUsers } from "../../services/userService"
+import { IconActivity, IconDoor, IconWhistle, IconClipboard } from "../ui/Icons"
 
 const initialForm = {
     sport_id: "",
@@ -19,6 +20,7 @@ function SportRoomFormModal({ show, handleClose, handleSave, selectedSportRoom }
     const [rooms, setRooms] = useState([])
     const [coaches, setCoaches] = useState([])
     const [loadingOptions, setLoadingOptions] = useState(true)
+    const [validated, setValidated] = useState(false)
 
     const loadOptions = async () => {
         try {
@@ -56,6 +58,7 @@ function SportRoomFormModal({ show, handleClose, handleSave, selectedSportRoom }
         } else {
             setFormData(initialForm)
         }
+        setValidated(false)
     }, [selectedSportRoom, show])
 
     const handleChange = (event) => {
@@ -64,7 +67,16 @@ function SportRoomFormModal({ show, handleClose, handleSave, selectedSportRoom }
     }
 
     const onSubmit = (event) => {
+        const form = event.currentTarget
         event.preventDefault()
+
+        if (form.checkValidity() === false) {
+            event.stopPropagation()
+            setValidated(true)
+            return
+        }
+
+        setValidated(true)
         handleSave({
             sport_id: Number(formData.sport_id),
             room_id: Number(formData.room_id),
@@ -74,88 +86,106 @@ function SportRoomFormModal({ show, handleClose, handleSave, selectedSportRoom }
     }
 
     return (
-        <Modal show={show} onHide={handleClose} centered>
+        <Modal show={show} onHide={handleClose} centered dialogClassName="modal-modern">
             <Modal.Header closeButton>
-                <Modal.Title>
-                    {selectedSportRoom ? "Editar Asignación" : "Nueva Asignación"}
-                </Modal.Title>
+                <div className="d-flex align-items-center gap-2">
+                    <div className="modal-icon-chip" style={{ background: "#FAECE7", color: "#712B13" }}>
+                        <IconClipboard size={19} />
+                    </div>
+                    <Modal.Title style={{ fontSize: "17px" }}>
+                        {selectedSportRoom ? "Editar Asignación" : "Nueva Asignación"}
+                    </Modal.Title>
+                </div>
             </Modal.Header>
 
-            <Form onSubmit={onSubmit}>
+            <Form noValidate validated={validated} onSubmit={onSubmit}>
                 <Modal.Body>
                     <Form.Group className="mb-3">
-                        <Form.Label>Deporte</Form.Label>
-                        <Form.Select
-                            name="sport_id"
-                            value={formData.sport_id}
-                            onChange={handleChange}
-                            disabled={loadingOptions}
-                            required
-                        >
-                            <option value="">Seleccione un deporte</option>
-                            {sports.map((sport) => (
-                                <option key={sport.id} value={sport.id}>
-                                    {sport.name}
-                                </option>
-                            ))}
-                        </Form.Select>
+                        <Form.Label className="field-label">Deporte</Form.Label>
+                        <div className="field-icon-group">
+                            <span className="field-icon"><IconActivity size={16} /></span>
+                            <Form.Select
+                                name="sport_id"
+                                value={formData.sport_id}
+                                onChange={handleChange}
+                                disabled={loadingOptions}
+                                required
+                            >
+                                <option value="">Seleccione un deporte</option>
+                                {sports.map((sport) => (
+                                    <option key={sport.id} value={sport.id}>
+                                        {sport.name}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </div>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <Form.Label>Sala</Form.Label>
-                        <Form.Select
-                            name="room_id"
-                            value={formData.room_id}
-                            onChange={handleChange}
-                            disabled={loadingOptions}
-                            required
-                        >
-                            <option value="">Seleccione una sala</option>
-                            {rooms.map((room) => (
-                                <option key={room.id} value={room.id}>
-                                    {room.name}
-                                </option>
-                            ))}
-                        </Form.Select>
+                        <Form.Label className="field-label">Sala</Form.Label>
+                        <div className="field-icon-group">
+                            <span className="field-icon"><IconDoor size={16} /></span>
+                            <Form.Select
+                                name="room_id"
+                                value={formData.room_id}
+                                onChange={handleChange}
+                                disabled={loadingOptions}
+                                required
+                            >
+                                <option value="">Seleccione una sala</option>
+                                {rooms.map((room) => (
+                                    <option key={room.id} value={room.id}>
+                                        {room.name}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </div>
                     </Form.Group>
 
                     <Form.Group className="mb-3">
-                        <Form.Label>Coach</Form.Label>
-                        <Form.Select
-                            name="coach_id"
-                            value={formData.coach_id}
-                            onChange={handleChange}
-                            disabled={loadingOptions}
-                            required
-                        >
-                            <option value="">Seleccione un coach</option>
-                            {coaches.map((coach) => (
-                                <option key={coach.id} value={coach.id}>
-                                    {coach.full_name || coach.email}
-                                </option>
-                            ))}
-                        </Form.Select>
+                        <Form.Label className="field-label">Coach</Form.Label>
+                        <div className="field-icon-group">
+                            <span className="field-icon"><IconWhistle size={16} /></span>
+                            <Form.Select
+                                name="coach_id"
+                                value={formData.coach_id}
+                                onChange={handleChange}
+                                disabled={loadingOptions}
+                                required
+                            >
+                                <option value="">Seleccione un coach</option>
+                                {coaches.map((coach) => (
+                                    <option key={coach.id} value={coach.id}>
+                                        {coach.full_name || coach.email}
+                                    </option>
+                                ))}
+                            </Form.Select>
+                        </div>
                     </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Label>Observación</Form.Label>
-                        <Form.Control
-                            as="textarea"
-                            rows={2}
-                            name="observation"
-                            value={formData.observation}
-                            onChange={handleChange}
-                            maxLength={255}
-                        />
+                    <Form.Group className="mb-1">
+                        <Form.Label className="field-label">Observación</Form.Label>
+                        <div className="field-icon-group">
+                            <span className="field-icon field-icon-top"><IconClipboard size={16} /></span>
+                            <Form.Control
+                                as="textarea"
+                                rows={2}
+                                name="observation"
+                                placeholder="Opcional"
+                                value={formData.observation}
+                                onChange={handleChange}
+                                maxLength={255}
+                            />
+                        </div>
                     </Form.Group>
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button className="btn-brand-ghost" onClick={handleClose}>
                         Cancelar
                     </Button>
-                    <Button variant="primary" type="submit" disabled={loadingOptions}>
-                        Guardar
+                    <Button type="submit" className="btn-brand-primary" disabled={loadingOptions}>
+                        Guardar asignación
                     </Button>
                 </Modal.Footer>
             </Form>

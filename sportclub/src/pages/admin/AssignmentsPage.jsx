@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
-import { Button, Card, Spinner, Table } from "react-bootstrap"
+import { Button, Card, Spinner } from "react-bootstrap"
 import Swal from "sweetalert2"
 import SportRoomFormModal from "../../componentes/sportRooms/SportRoomFormModal"
+import { IconPlus, IconEdit, IconTrash, IconClipboard } from "../../componentes/ui/Icons"
 
 import {
     createSportRoom,
@@ -86,11 +87,14 @@ function AssignmentsPage() {
     }
 
     return (
-        <Card className="shadow-sm">
+        <Card className="card-modern">
             <Card.Header className="d-flex justify-content-between align-items-center">
-                <h4 className="mb-0">Gestión de Asignaciones</h4>
-                <Button variant="primary" onClick={openCreateModal}>
-                    Nueva Asignación
+                <div>
+                    <h4 className="mb-0" style={{ fontWeight: 700 }}>Gestión de Asignaciones</h4>
+                    <div className="small text-muted">{assignments.length} asignaciones activas</div>
+                </div>
+                <Button className="btn-brand-primary d-flex align-items-center gap-2" onClick={openCreateModal}>
+                    <IconPlus size={16} /> Nueva Asignación
                 </Button>
             </Card.Header>
 
@@ -100,47 +104,65 @@ function AssignmentsPage() {
                         <Spinner animation="border" />
                         <p className="mt-2">Cargando asignaciones...</p>
                     </div>
+                ) : assignments.length === 0 ? (
+                    <div className="text-center text-muted p-4">
+                        <IconClipboard size={28} />
+                        <p className="mt-2 mb-0">Aún no hay asignaciones registradas.</p>
+                    </div>
                 ) : (
-                    <Table responsive striped bordered hover>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Deporte</th>
-                                <th>Sala</th>
-                                <th>Coach</th>
-                                <th>Observación</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {assignments.map((assignment) => (
-                                <tr key={assignment.id}>
-                                    <td>{assignment.id}</td>
-                                    <td>{assignment.sport?.name}</td>
-                                    <td>{assignment.room?.name}</td>
-                                    <td>{assignment.coach?.full_name || assignment.coach?.email}</td>
-                                    <td>{assignment.observation || "-"}</td>
-                                    <td>
-                                        <Button
-                                            variant="warning"
-                                            size="sm"
-                                            className="me-2"
-                                            onClick={() => openEditModal(assignment)}
-                                        >
-                                            Editar
-                                        </Button>
-                                        <Button
-                                            variant="danger"
-                                            size="sm"
-                                            onClick={() => handleDelete(assignment)}
-                                        >
-                                            Eliminar
-                                        </Button>
-                                    </td>
+                    <div className="table-scroll">
+                        <table className="table-modern">
+                            <thead>
+                                <tr>
+                                    <th>Deporte</th>
+                                    <th>Sala</th>
+                                    <th>Coach</th>
+                                    <th>Observación</th>
+                                    <th style={{ textAlign: "right" }}>Acciones</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+                            <tbody>
+                                {assignments.map((assignment) => (
+                                    <tr key={assignment.id}>
+                                        <td>
+                                            <div className="d-flex align-items-center gap-2">
+                                                <div
+                                                    className="avatar-badge"
+                                                    style={{ background: "#FAECE7", color: "#712B13" }}
+                                                >
+                                                    <IconClipboard size={14} />
+                                                </div>
+                                                <span>{assignment.sport?.name}</span>
+                                            </div>
+                                        </td>
+                                        <td>{assignment.room?.name}</td>
+                                        <td className="text-muted">{assignment.coach?.full_name || assignment.coach?.email}</td>
+                                        <td className="text-muted">{assignment.observation || "-"}</td>
+                                        <td style={{ textAlign: "right" }}>
+                                            <button
+                                                type="button"
+                                                className="icon-action-btn me-2"
+                                                onClick={() => openEditModal(assignment)}
+                                                aria-label="Editar asignación"
+                                                title="Editar"
+                                            >
+                                                <IconEdit size={15} />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="icon-action-btn danger"
+                                                onClick={() => handleDelete(assignment)}
+                                                aria-label="Eliminar asignación"
+                                                title="Eliminar"
+                                            >
+                                                <IconTrash size={15} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </Card.Body>
 

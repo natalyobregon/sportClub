@@ -18,11 +18,13 @@ export async function getUsers() {
         headers: getHeader()
     })
 
+    const data = await response.json()
+
     if (!response.ok) {
         throw new Error(data.message || "Error al obtener usuarios")
     }
 
-    return await response.json()
+    return data
 }
 
 export async function createUser(userData) {

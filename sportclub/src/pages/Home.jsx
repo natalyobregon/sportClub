@@ -1,71 +1,133 @@
 import { Link } from "react-router-dom"
-import { Col, Row } from "react-bootstrap"
-import logo from "../assets/logo.png"
+import { Container, Row, Col } from "react-bootstrap"
+import gymPhoto from "../assets/gym2.jpg"
+
+const STATS = [
+    ["2500+", "Socios activos"],
+    ["18", "Deportes"],
+    ["35", "Entrenadores"],
+    ["100%", "Reservas online"]
+]
 
 function Home() {
     return (
-        <div style={{ borderRadius: "0 0 16px 16px", overflow: "hidden" }}>
-            <div className="split-bg" style={{ minHeight: "50vh" }}>
-                <div className="split-bg-a" style={{ background: "var(--brand-purple)" }}></div>
-                <div
-                    className="split-bg-b"
-                    style={{ background: "var(--brand-yellow)", clipPath: "polygon(0 88%, 100% 78%, 100% 100%, 0 100%)" }}
-                ></div>
-
-                <div className="split-content" style={{ padding: "36px 28px 40px" }}>
-                    <div className="d-flex align-items-center gap-3 mb-4">
-                        <img src={logo} alt="SportClub" className="brand-crest" style={{ width: "64px", height: "64px" }} />
-                        <span className="brand-heading text-white" style={{ fontSize: "15px", letterSpacing: "1px" }}>
-                            SportClub
-                        </span>
-                    </div>
-
-                    <h1 className="brand-heading text-white" style={{ fontSize: "36px", lineHeight: 1.2, maxWidth: "480px" }}>
-                        Bienvenido a SportClub
-                    </h1>
-                    <p className="text-white mb-4" style={{ maxWidth: "420px", opacity: 0.9 }}>
-                        Reserva tus clases y controla tu horario, sin complicaciones.
-                    </p>
-
-                    <Link to="/login">
+        <div
+            style={{
+                background: "#f6f7fb",
+                minHeight: "100vh",
+                overflow: "hidden"
+            }}
+        >
+            {/* HERO */}
+            <section
+                style={{
+                    position: "relative",
+                    minHeight: "78vh",
+                    backgroundImage: `linear-gradient(rgba(20, 18, 26, 0.55), rgba(91, 33, 182, 0.75)), url(${gymPhoto})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    paddingBottom: "0"
+                }}
+            >
+                <Container>
+                    <div style={{ maxWidth: "560px" }}>
                         <span
-                            className="d-inline-block fw-bold"
+                            className="wordmark text-white d-inline-block mb-3"
+                            style={{ fontSize: "60px" }}
+                        >
+                            SPORT
+                            <span className="wordmark-accent">CLUB</span>
+                        </span>
+
+                        <h1
+                            className="text-white"
                             style={{
-                                backgroundColor: "var(--brand-yellow)",
-                                color: "var(--brand-ink)",
-                                padding: "12px 28px",
-                                borderRadius: "6px",
-                                fontSize: "15px",
+                                fontSize: "48px",
+                                fontWeight: 800,
+                                lineHeight: 1.15
                             }}
                         >
-                            Iniciar sesión
-                        </span>
-                    </Link>
-                </div>
-            </div>
+                            Entrena cuando quieras.
+                            <br />
+                            Reserva en segundos.
+                        </h1>
 
-            <div className="bg-white p-4">
-                <Row className="g-3">
-                    <Col xs={4}>
-                        <div className="rounded p-3 text-center" style={{ backgroundColor: "var(--bs-light)" }}>
-                            <div className="fw-bold fs-3" style={{ color: "var(--brand-purple)" }}>12</div>
-                            <div className="small text-muted">deportes</div>
+                        <p
+                            className="text-white mb-4"
+                            style={{
+                                opacity: 0.85,
+                                fontSize: "16px",
+                                maxWidth: "460px"
+                            }}
+                        >
+                            Organiza tus entrenamientos, reserva clases y lleva el
+                            control de tus actividades desde un solo lugar.
+                        </p>
+
+                        <div className="d-flex gap-2 flex-wrap">
+                            <Link
+                                to="/login"
+                                className="btn-brand-yellow"
+                                style={{
+                                    padding: "13px 30px",
+                                    textDecoration: "none"
+                                }}
+                            >
+                                Comenzar ahora
+                            </Link>
+
+                            <Link
+                                to="/login"
+                                style={{
+                                    padding: "13px 30px",
+                                    borderRadius: "10px",
+                                    border: "1px solid rgba(255,255,255,0.5)",
+                                    color: "#fff",
+                                    fontWeight: 600,
+                                    textDecoration: "none"
+                                }}
+                            >
+                                Iniciar sesión
+                            </Link>
                         </div>
-                    </Col>
-                    <Col xs={4}>
-                        <div className="rounded p-3 text-center" style={{ backgroundColor: "var(--bs-light)" }}>
-                            <div className="fw-bold fs-3" style={{ color: "var(--brand-purple)" }}>6</div>
-                            <div className="small text-muted">salas</div>
-                        </div>
-                    </Col>
-                    <Col xs={4}>
-                        <div className="rounded p-3 text-center" style={{ backgroundColor: "var(--bs-light)" }}>
-                            <div className="fw-bold fs-3" style={{ color: "var(--brand-purple)" }}>24</div>
-                            <div className="small text-muted">horarios/sem</div>
-                        </div>
-                    </Col>
+                    </div>
+                </Container>
+            </section>
+
+            {/* ESTADÍSTICAS */}
+            <Container>
+                <Row
+                    className="justify-content-center g-3"
+                    style={{
+                        marginTop: "-6px",
+                        position: "relative",
+                        zIndex: 2,
+                        paddingBottom: "0"
+                    }}
+                >
+                    {STATS.map(([value, label]) => (
+                        <Col key={label} lg={3} md={6} xs={6}>
+                            <div className="card-modern text-center py-4">
+                                <div
+                                    style={{
+                                        fontWeight: 800,
+                                        fontSize: "50px",
+                                        color: "var(--brand-purple)"
+                                    }}
+                                >
+                                    {value}
+                                </div>
+
+                                <div className="small text-muted">
+                                    {label}
+                                </div>
+                            </div>
+                        </Col>
+                    ))}
                 </Row>
-            </div>
+            </Container>
         </div>
     )
 }

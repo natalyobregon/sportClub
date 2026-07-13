@@ -21,7 +21,6 @@ import SchedulesPage from "../pages/admin/SchedulesPage";
 
 import ProfilePage from "../pages/ProfilePage";
 
-import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 
 import AdminLayout from "../layouts/AdminLayout";

@@ -1,3 +1,10 @@
+/* Tipografía general de la app (reemplaza la fuente del sistema por algo menos "básico") */
+@import url('https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap');
+/* Tipografía para títulos grandes (Home, dashboards) */
+@import url('https://fonts.googleapis.com/css2?family=Changa+One&display=swap');
+/* Tipografía llamativa para el wordmark "SPORTCLUB" */
+@import url('https://fonts.googleapis.com/css2?family=Bungee&display=swap');
+
 /* Paleta de marca (Home / Login) */
 :root {
   --brand-yellow: #FFC300;
@@ -16,13 +23,28 @@
   --brand-ink: #14121A;
 }
 
-/* Tipografía de marca para títulos grandes */
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+/* Aplica Arimo a toda la app (incluye componentes de react-bootstrap) */
+:root {
+  --bs-body-font-family: 'Arimo', system-ui, sans-serif;
+}
+body {
+  font-family: 'Arimo', system-ui, sans-serif;
+}
 
+/* Tipografía de marca para títulos grandes */
 .brand-heading {
-  font-family: 'Archivo Black', sans-serif;
+  font-family: 'Changa One', sans-serif;
   font-weight: 400;
   text-transform: uppercase;
+}
+
+/* Home: tarjetas con elevación al pasar el mouse */
+.home-lift-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.home-lift-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(20, 18, 26, 0.12);
 }
 
 /* Corte diagonal a dos tonos, usado en Home, Login y los dashboards */
@@ -56,6 +78,342 @@
   object-fit: contain;
   padding: 5px;
   flex-shrink: 0;
+}
+
+/* ============================================================
+   Sistema de diseño para modales, tablas y elementos reutilizables
+   (No modifica los colores por rol definidos arriba)
+   ============================================================ */
+:root {
+  --surface: #ffffff;
+  --surface-soft: #f7f6fb;
+  --ink: #201c2c;
+  --muted: #7a7585;
+  --border-soft: #ece9f3;
+  --danger: #c0392b;
+  --danger-soft: #fdeaea;
+}
+
+.modal-modern .modal-content {
+  border-radius: 18px;
+  border: none;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(20, 18, 26, 0.25);
+  animation: modalPopIn 0.2s ease;
+}
+
+@keyframes modalPopIn {
+  from { opacity: 0; transform: scale(0.96) translateY(6px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal-modern .modal-header {
+  border-bottom: 1px solid var(--border-soft);
+  padding: 18px 24px;
+}
+
+.modal-modern .modal-body {
+  padding: 22px 24px;
+}
+
+.modal-modern .modal-footer {
+  border-top: 1px solid var(--border-soft);
+  padding: 14px 24px;
+}
+
+.modal-icon-chip {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.field-icon-group {
+  position: relative;
+  display: block;
+}
+
+.field-icon-group .field-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+  display: flex;
+  z-index: 2;
+}
+
+.field-icon-group .field-icon.field-icon-top {
+  top: 14px;
+  transform: none;
+}
+
+.field-icon-group .form-control,
+.field-icon-group .form-select {
+  padding-left: 38px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+}
+
+.field-icon-group textarea.form-control {
+  height: auto;
+  padding-top: 10px;
+}
+
+.field-icon-group .form-control:focus,
+.field-icon-group .form-select:focus {
+  border-color: var(--brand-purple);
+  box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.12);
+}
+
+.field-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.btn-brand-primary {
+  background: var(--brand-purple);
+  border-color: var(--brand-purple);
+  font-weight: 600;
+  border-radius: 10px;
+}
+.btn-brand-primary:hover,
+.btn-brand-primary:focus {
+  background: #4c1a99;
+  border-color: #4c1a99;
+}
+
+.btn-brand-yellow {
+  background: var(--brand-yellow);
+  border-color: var(--brand-yellow);
+  color: var(--brand-ink);
+  font-weight: 700;
+  border-radius: 10px;
+}
+.btn-brand-yellow:hover,
+.btn-brand-yellow:focus {
+  background: #e6af00;
+  border-color: #e6af00;
+  color: var(--brand-ink);
+}
+
+.btn-brand-ghost {
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: transparent;
+  color: var(--ink);
+  font-weight: 500;
+}
+.btn-brand-ghost:hover {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+.card-modern {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(20, 18, 26, 0.06);
+}
+.card-modern > .card-header {
+  background: #fff;
+  border-bottom: 1px solid var(--border-soft);
+  border-radius: 16px 16px 0 0 !important;
+  padding: 18px 22px;
+}
+.card-modern > .card-body {
+  padding: 0;
+}
+
+.table-modern {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  margin: 0;
+}
+.table-modern thead th {
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  font-weight: 700;
+  padding: 12px 22px;
+  border-bottom: 1px solid var(--border-soft);
+  white-space: nowrap;
+}
+.table-modern tbody td {
+  padding: 12px 22px;
+  font-size: 14px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: middle;
+}
+.table-modern tbody tr {
+  transition: background 0.15s ease;
+}
+.table-modern tbody tr:hover {
+  background: var(--surface-soft);
+}
+.table-modern tbody tr:last-child td {
+  border-bottom: none;
+}
+.table-scroll {
+  overflow-x: auto;
+}
+
+.avatar-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.role-pill,
+.status-pill {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 20px;
+  display: inline-block;
+  white-space: nowrap;
+}
+.role-pill-admin { background: #fdeaea; color: #b42318; }
+.role-pill-coach { background: #e6f6ec; color: #0f7a3d; }
+.role-pill-user { background: #e8eefb; color: #1d4ed8; }
+.status-pill-active { background: #e6f6ec; color: #0f7a3d; }
+.status-pill-inactive { background: #f1f0f4; color: #6b6575; }
+
+.icon-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-soft);
+  background: #fff;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.icon-action-btn:hover {
+  background: var(--surface-soft);
+}
+.icon-action-btn.danger {
+  border-color: #f4d4d4;
+  color: var(--danger);
+}
+.icon-action-btn.danger:hover {
+  background: var(--danger-soft);
+}
+
+.wordmark {
+  font-family: 'Bungee', cursive;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+.wordmark-accent {
+  color: var(--brand-yellow);
+}
+
+/* Barra lateral: estado activo de navegación */
+.role-sidebar .nav-link {
+  border-radius: 10px;
+  padding: 9px 12px;
+  transition: background 0.15s ease;
+}
+.role-sidebar .nav-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.role-sidebar .nav-link.active-nav-link {
+  background: rgba(255, 255, 255, 0.22);
+  font-weight: 700;
+}
+
+/* Topbar con avatar de perfil */
+.app-topbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 14px 24px;
+  border-bottom: 1px solid var(--border-soft);
+  background: #fff;
+}
+.topbar-avatar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.topbar-avatar-link:hover {
+  color: var(--ink);
+  opacity: 0.85;
+}
+.topbar-avatar-circle,
+.topbar-avatar-circle img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: #eeedfe;
+  color: var(--brand-purple);
+}
+
+.avatar-upload-wrap {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  flex-shrink: 0;
+}
+.avatar-upload-wrap img,
+.avatar-upload-circle {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 700;
+}
+.avatar-upload-camera {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--brand-purple);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #fff;
+  cursor: pointer;
+  color: #fff;
+}
+.avatar-upload-camera input {
+  display: none;
 }
 
 /* Barra lateral de navegación por rol */

@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react"
 import { Col, Row } from "react-bootstrap"
-import { getMyClasses, getMySchedules } from "../../services/coachService"
+import { getMyClasses, getMySchedules } from "../../services/coachservice"
 import { getDayLabel } from "../../utils/dayOfWeek"
 
 function CoachDashboard() {
     const [classesCount, setClassesCount] = useState("-")
     const [nextSchedule, setNextSchedule] = useState(null)
+    const [myClasses, setMyClasses] = useState([])
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const loadStats = async () => {
             try {
+                setLoading(true)
                 const [classesRes, schedulesRes] = await Promise.all([
                     getMyClasses(),
                     getMySchedules(),
@@ -19,8 +22,11 @@ function CoachDashboard() {
 
                 setClassesCount(classes.length)
                 setNextSchedule(schedules[0] || null)
-            } catch (error) {
+                setMyClasses(classes)
+            } catch {
                 // Si alguna estadística falla, el dashboard igual se muestra con "-"
+            } finally {
+                setLoading(false)
             }
         }
         loadStats()
@@ -41,7 +47,7 @@ function CoachDashboard() {
                     Mis clases asignadas y mi horario semanal.
                 </p>
 
-                <Row className="g-3">
+                <Row className="g-3 mb-4">
                     <Col xs={12} md={5}>
                         <div className="bg-white rounded p-3 h-100">
                             <div className="fw-bold fs-3" style={{ color: "var(--role-coach-a)" }}>{classesCount}</div>
@@ -71,6 +77,36 @@ function CoachDashboard() {
                         </div>
                     </Col>
                 </Row>
+
+                {!loading && (
+                    <div className="bg-white rounded p-3">
+                        <div className="fw-semibold mb-2" style={{ fontSize: "13px" }}>Mis clases</div>
+                        {myClasses.length === 0 ? (
+                            <div className="small text-muted">Aún no tienes clases asignadas.</div>
+                        ) : (
+                            <div className="table-scroll">
+                                <table className="table-modern" style={{ fontSize: "13px" }}>
+                                    <thead>
+                                        <tr>
+                                            <th>Deporte</th>
+                                            <th>Sala</th>
+                                            <th>Observación</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {myClasses.map((item) => (
+                                            <tr key={item.id}>
+                                                <td>{item.sport?.name}</td>
+                                                <td>{item.room?.name}</td>
+                                                <td className="text-muted">{item.observation || "-"}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     )

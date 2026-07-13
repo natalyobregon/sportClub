@@ -1,9 +1,10 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { Alert, Button, Col, Container, Form, Row, Spinner } from "react-bootstrap"
+import { Alert, Button, Form, Spinner } from "react-bootstrap"
 import Swal from "sweetalert2"
 import { loginUser, saveSession } from "../services/authService"
-import logo from "../assets/logo.png"
+import RegisterModal from "../componentes/auth/RegisterModal"
+import gym from "../assets/gym.jpg"
 
 function Login() {
     const navigate = useNavigate()
@@ -12,11 +13,13 @@ function Login() {
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
     const [loading, setLoading] = useState(false)
+    const [showRegister, setShowRegister] = useState(false)
 
     const handleSubmit = async (event) => {
         event.preventDefault()
         setError("")
         setLoading(true)
+
         try {
             const user = await loginUser({ email, password })
 
@@ -44,76 +47,205 @@ function Login() {
         }
     }
 
+    const handleRegistered = (registeredEmail) => {
+        Swal.fire({
+            title: "¡Cuenta creada!",
+            text: "Ya puedes iniciar sesión con tus credenciales.",
+            icon: "success",
+            timer: 2200,
+            showConfirmButton: false
+        })
+        if (registeredEmail) {
+            setEmail(registeredEmail)
+        }
+    }
+
     return (
-        <Container fluid className="p-0" style={{ minHeight: "100vh" }}>
-            <Row className="g-0" style={{ minHeight: "100vh" }}>
-                <Col md={5} className="split-bg d-none d-md-flex flex-column justify-content-between p-4">
-                    <div className="split-bg-a" style={{ background: "var(--brand-purple)" }}></div>
-                    <div className="split-bg-b" style={{ background: "var(--brand-yellow)" }}></div>
+        <div
+            className="d-flex justify-content-center align-items-center"
+            style={{
+                minHeight: "100vh",
+                padding: "30px",
+                backgroundImage: `
+                    linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45)),
+                    url(${gym})
+                `,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat"
+            }}
+        >
+            <div
+                className="shadow"
+                style={{
+                    width: "900px",
+                    maxWidth: "100%",
+                    display: "flex",
+                    background: "#fff",
+                    borderRadius: "24px",
+                    overflow: "hidden"
+                }}
+            >
+                {/* Panel izquierdo */}
+                <div
+                    style={{
+                        width: "40%",
+                        background: "var(--brand-purple)",
+                        position: "relative",
+                        padding: "30px",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        color: "#fff",
+                        overflow: "hidden"
+                    }}
+                >
+                    <div
+                        style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "55%",
+                            background: "var(--brand-yellow)",
+                            clipPath: "polygon(0 35%,100% 0,100% 100%,0 100%)"
+                        }}
+                    />
 
-                    <div className="split-content d-flex align-items-center gap-3">
-                        <img src={logo} alt="SportClub" className="brand-crest" />
-                        <span className="brand-heading text-white" style={{ fontSize: "16px" }}>
-                            SportClub
-                        </span>
-                    </div>
+                    <h2
+                        className="wordmark"
+                        style={{
+                            zIndex: 2,
+                            margin: 0,
+                            fontSize: "30px"
+                        }}
+                    >
+                        SPORT<span className="wordmark-accent">CLUB</span>
+                    </h2>
 
-                    <div className="split-content text-white">
-                        <p className="brand-heading mb-0" style={{ fontSize: "22px" }}>
-                            Entrena hoy, agradece mañana
-                        </p>
-                    </div>
-                </Col>
+                </div>
 
-                <Col md={7} className="d-flex align-items-center justify-content-center bg-white">
-                    <div style={{ width: "22rem" }}>
-                        <h2 className="brand-heading mb-1" style={{ fontSize: "22px", color: "var(--brand-ink)" }}>
-                            Hola de nuevo
-                        </h2>
-                        <p className="text-muted mb-4">Entra con tu correo del club</p>
+                {/* Panel derecho */}
+                <div
+                    style={{
+                        width: "60%",
+                        padding: "50px"
+                    }}
+                >
+                    <h2
+                        style={{
+                            fontWeight: "700",
+                            color: "#222",
+                            marginBottom: "6px"
+                        }}
+                    >
+                        ¡Hola de nuevo!
+                    </h2>
 
-                        {error && <Alert variant="danger">{error}</Alert>}
+                    <p
+                        style={{
+                            color: "#777",
+                            marginBottom: "30px"
+                        }}
+                    >
+                        Entra con tu correo del club
+                    </p>
 
-                        <Form onSubmit={handleSubmit}>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Correo</Form.Label>
-                                <Form.Control
-                                    type="email"
-                                    placeholder="Ingrese su correo"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </Form.Group>
+                    {error && (
+                        <Alert variant="danger">
+                            {error}
+                        </Alert>
+                    )}
 
-                            <Form.Group className="mb-4">
-                                <Form.Label>Contraseña</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    placeholder="Ingrese su contraseña"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                            </Form.Group>
+                    <Form onSubmit={handleSubmit}>
 
-                            <Button
-                                type="submit"
-                                className="w-100 border-0"
-                                style={{ backgroundColor: "var(--brand-purple)" }}
-                                disabled={loading}
+                        <Form.Group className="mb-3">
+                            <Form.Label>Correo</Form.Label>
+
+                            <Form.Control
+                                type="email"
+                                placeholder="nombre@club.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                style={{
+                                    height: "48px",
+                                    borderRadius: "12px"
+                                }}
+                            />
+                        </Form.Group>
+
+                        <Form.Group className="mb-4">
+                            <Form.Label>Contraseña</Form.Label>
+
+                            <Form.Control
+                                type="password"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                style={{
+                                    height: "48px",
+                                    borderRadius: "12px"
+                                }}
+                            />
+                        </Form.Group>
+
+                        <Button
+                            type="submit"
+                            disabled={loading}
+                            style={{
+                                width: "100%",
+                                height: "48px",
+                                border: "none",
+                                borderRadius: "12px",
+                                background: "var(--brand-yellow)",
+                                color: "#222",
+                                fontWeight: "700",
+                                fontSize: "16px"
+                            }}
+                        >
+                            {loading ? (
+                                <>
+                                    <Spinner
+                                        animation="border"
+                                        size="sm"
+                                        className="me-2"
+                                    />
+                                    Ingresando...
+                                </>
+                            ) : (
+                                "Ingresar"
+                            )}
+                        </Button>
+
+                        <div className="text-center mt-4" style={{ fontSize: "14px", color: "#777" }}>
+                            ¿Aún no tienes cuenta?{" "}
+                            <button
+                                type="button"
+                                onClick={() => setShowRegister(true)}
+                                style={{
+                                    background: "none",
+                                    border: "none",
+                                    padding: 0,
+                                    color: "var(--brand-purple)",
+                                    fontWeight: "700",
+                                    textDecoration: "underline",
+                                    cursor: "pointer"
+                                }}
                             >
-                                {loading ? (
-                                    <>
-                                        <Spinner size="sm" animation="border" /> Ingresando...
-                                    </>
-                                ) : (
-                                    "Ingresar"
-                                )}
-                            </Button>
-                        </Form>
-                    </div>
-                </Col>
-            </Row>
-        </Container>
+                                Crear cuenta
+                            </button>
+                        </div>
+
+                    </Form>
+                </div>
+            </div>
+
+            <RegisterModal
+                show={showRegister}
+                handleClose={() => setShowRegister(false)}
+                onRegistered={handleRegistered}
+            />
+        </div>
     )
 }
 
